@@ -57,6 +57,8 @@ public class GitHubApi
     private final Gson gson;
     private final Cache cache;
 
+    private RateLeft rateLeft;
+
     private GitHubApi(String oauthToken)
     {
         this.apiURI = URI.create("https://api.github.com");
@@ -140,28 +142,40 @@ public class GitHubApi
             LOG.debug("Returning Cached from {}", path);
             return body;
         }
+        catch (GitHubResourceNotFoundException e)
+        {
+            throw e;
+        }
         catch (IOException e)
         {
+            RateLeft rateLeft = getRateLeft();
+            int remainingRate = rateLeft.applyRequest("core");
             URI uri = apiURI.resolve(path);
-            LOG.debug("Issuing API Request {}", uri);
+            LOG.debug("Issuing API Request {} ({} remaining limit)", uri, remainingRate);
             HttpRequest request = requestBuilder.apply(baseRequest.copy().uri(uri));
-            // TODO: apply rate limits here
-            // 20:23:55.401 [INFO] :main: (org.eclipse.jetty.toolchain.ChangelogTool) - GitHub API Rate Limits:
-            // RateLimits
-            //   [rate=Rate[u:75/l:5000(r:4925),reset=3,018s],
-            //   [{
-            //    core=Rate[u:75/l:5000(r:4925),reset=3,018s],
-            //    search=Rate[u:0/l:30(r:30),reset=60s],
-            //    graphql=Rate[u:1/l:5000(r:4999),reset=2,429s],
-            //    integration_manifest=Rate[u:0/l:5000(r:5000),reset=3,600s],
-            //    source_import=Rate[u:0/l:100(r:100),reset=60s],
-            //    code_scanning_upload=Rate[u:0/l:500(r:500),reset=3,600s]}]]
             HttpResponse<String> response = client.send(request, responseInfo -> HttpResponse.BodySubscribers.ofString(UTF_8));
-            if (response.statusCode() != 200)
-                throw new GitHubApiException("Unable to get [" + path + "]: status code: " + response.statusCode());
-            cache.save(path, response.body());
-            return response.body();
+            switch (response.statusCode())
+            {
+                case 200:
+                    cache.save(path, response.body());
+                    return response.body();
+                case 404:
+                    cache.saveNotFound(path);
+                    throw new GitHubResourceNotFoundException(path);
+                default:
+                    throw new GitHubApiException("Unable to get [" + path + "]: status code: " + response.statusCode());
+            }
         }
+    }
+
+    private RateLeft getRateLeft() throws IOException, InterruptedException
+    {
+        if ((rateLeft == null) || (rateLeft.isExpired()))
+        {
+            RateLimits rateLimits = getRateLimits();
+            rateLeft = new RateLeft(rateLimits);
+        }
+        return rateLeft;
     }
 
     public RateLimits getRateLimits() throws IOException, InterruptedException

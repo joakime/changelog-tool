@@ -46,7 +46,15 @@ public class Cache
     {
         // TODO: expire file
         byte[] buf = Files.readAllBytes(toJsonPath(path));
-        return new String(buf, UTF_8);
+        String body = new String(buf, UTF_8);
+        if (body.equals("-"))
+            throw new GitHubResourceNotFoundException(path);
+        return body;
+    }
+
+    public void saveNotFound(String path) throws IOException
+    {
+        save(path, "-");
     }
 
     public void save(String path, String body) throws IOException
