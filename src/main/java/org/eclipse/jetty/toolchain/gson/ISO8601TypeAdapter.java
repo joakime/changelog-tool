@@ -16,7 +16,7 @@
 // ========================================================================
 //
 
-package org.eclipse.jetty.toolchain.github;
+package org.eclipse.jetty.toolchain.gson;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;

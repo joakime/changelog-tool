@@ -3,17 +3,23 @@ package org.eclipse.jetty.toolchain;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GitCommit
 {
-    protected ZonedDateTime commitTime;
     private String sha;
     private Author author;
-    private String shortMessage;
+    private String title;
+    private String body;
+    private ZonedDateTime commitTime;
     private boolean isMerge;
-    private List<String> files = new ArrayList<>();
-    private List<String> branches = new ArrayList<>();
+    private boolean isSkipped = false;
+    private List<String> files;
+    private List<String> branches;
+    private Set<Integer> issueRefs;
+    private Set<Integer> pullRequestRefs;
 
     public Author getAuthor()
     {
@@ -25,6 +31,16 @@ public class GitCommit
         this.author = author;
     }
 
+    public String getBody()
+    {
+        return body;
+    }
+
+    public void setBody(String body)
+    {
+        this.body = body;
+    }
+
     public List<String> getBranches()
     {
         return branches;
@@ -32,8 +48,13 @@ public class GitCommit
 
     public void setBranches(Collection<String> branches)
     {
-        this.branches.clear();
-        this.branches.addAll(branches);
+        if (branches == null)
+            this.branches = null;
+        else
+        {
+            this.branches = new ArrayList<>();
+            this.branches.addAll(branches);
+        }
     }
 
     public ZonedDateTime getCommitTime()
@@ -51,10 +72,53 @@ public class GitCommit
         return files;
     }
 
+    public void addIssueRef(int ref)
+    {
+        if (this.issueRefs == null)
+            this.issueRefs = new HashSet<>();
+        this.issueRefs.add(ref);
+    }
+
+    public void addIssueRefs(Collection<Integer> refs)
+    {
+        if (this.issueRefs == null)
+            this.issueRefs = new HashSet<>();
+        this.issueRefs.addAll(refs);
+    }
+
+    public void addPullRequestRefs(Collection<Integer> refs)
+    {
+        if (this.pullRequestRefs == null)
+            this.pullRequestRefs = new HashSet<>();
+        this.pullRequestRefs.addAll(refs);
+    }
+
+    public void addPullRequestRef(int ref)
+    {
+        if (this.pullRequestRefs == null)
+            this.pullRequestRefs = new HashSet<>();
+        this.pullRequestRefs.add(ref);
+    }
+
+    public Set<Integer> getIssueRefs()
+    {
+        return issueRefs;
+    }
+
+    public Set<Integer> getPullRequestRefs()
+    {
+        return pullRequestRefs;
+    }
+
     public void setFiles(Collection<String> files)
     {
-        this.files.clear();
-        this.files.addAll(files);
+        if (files == null)
+            this.files = null;
+        else
+        {
+            this.files = new ArrayList<>();
+            this.files.addAll(files);
+        }
     }
 
     public String getSha()
@@ -67,14 +131,14 @@ public class GitCommit
         this.sha = sha;
     }
 
-    public String getShortMessage()
+    public String getTitle()
     {
-        return shortMessage;
+        return title;
     }
 
-    public void setShortMessage(String shortMessage)
+    public void setTitle(String title)
     {
-        this.shortMessage = shortMessage;
+        this.title = title;
     }
 
     public boolean isMerge()
@@ -85,5 +149,15 @@ public class GitCommit
     public void setMerge(boolean merge)
     {
         isMerge = merge;
+    }
+
+    public boolean isSkipped()
+    {
+        return isSkipped;
+    }
+
+    public void setSkipped(boolean skipped)
+    {
+        isSkipped = skipped;
     }
 }
