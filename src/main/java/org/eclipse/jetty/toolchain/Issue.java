@@ -12,12 +12,14 @@ public class Issue
     {
         UNKNOWN,
         ISSUE,
-        PULL_REQUEST;
+        PULL_REQUEST,
+        INVALID;
     }
 
-    private int num;
+    private final int num;
     private String title;
     private String body;
+    private String baseRef;
     private Type type = Type.UNKNOWN;
     private boolean skip = false;
     private Set<Integer> referencedIssues = new HashSet<>();
@@ -42,6 +44,16 @@ public class Issue
     public void addReferencedIssues(Collection<Integer> issueNums)
     {
         this.referencedIssues.addAll(issueNums);
+    }
+
+    public String getBaseRef()
+    {
+        return baseRef;
+    }
+
+    public void setBaseRef(String baseRef)
+    {
+        this.baseRef = baseRef;
     }
 
     public String getBody()
