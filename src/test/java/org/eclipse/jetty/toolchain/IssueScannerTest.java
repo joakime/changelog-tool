@@ -1,9 +1,14 @@
 package org.eclipse.jetty.toolchain;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 
+import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
 import org.junit.jupiter.api.Test;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,6 +66,18 @@ public class IssueScannerTest
         Set<Integer> hits = IssueScanner.scan("Issue 7777 - Example Issue");
         int[] actual = toSortedArray(hits);
         int[] expected = {7777};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testScanDependabotBody() throws IOException
+    {
+        Path dependabotIssue = MavenTestingUtils.getTestResourcePathFile("github/dependabot-issue-body.txt");
+        String body = Files.readString(dependabotIssue, UTF_8);
+        // Should result in no hits, as this is a dependabot body
+        Set<Integer> hits = IssueScanner.scan(body);
+        int[] actual = toSortedArray(hits);
+        int[] expected = {};
         assertArrayEquals(expected, actual);
     }
 

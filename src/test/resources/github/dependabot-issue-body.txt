@@ -1,0 +1,106 @@
+Bumps [spring-beans](https://github.com/spring-projects/spring-framework) from 5.1.1.RELEASE to 5.2.9.RELEASE.
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/spring-projects/spring-framework/releases">spring-beans's releases</a>.</em></p>
+<blockquote>
+<h2>v5.2.9.RELEASE</h2>
+<h2>:star: New Features</h2>
+<ul>
+<li>HttpHeaders.setContentDispositionFormData should ignore empty filename <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25769">#25769</a></li>
+<li>StringDecoder does not provide a way to configure the default charset <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25762">#25762</a></li>
+<li>MimeMessageHelper.addAttachment: configurable encoding of attachment filename <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25755">#25755</a></li>
+<li>Current log level not checked by LogAccessor supplier-enabled logging methods <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25741">#25741</a></li>
+<li>PropertiesLoaderSupport should ignore socket/connect exceptions as well <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25717">#25717</a></li>
+<li>Avoid repeated calls to getPathWithinApplication from UrlPathHelper.getLookupPathForRequest <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25669">#25669</a></li>
+<li>Avoid full singleton lock for DefaultSingletonBeanRegistry.getSingleton(beanName, false) <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25667">#25667</a></li>
+<li>XStreamMarshaller should avoid direct use of CompositeClassLoader which is not exported by XStream in OSGi <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25662">#25662</a></li>
+<li>Avoid LinkedList performance issues through use of ArrayDeque <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25652">#25652</a></li>
+<li>Introduce createContext() factory method in AbstractGenericContextLoader <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25600">#25600</a></li>
+<li>Declare MessagePostProcessor as a <code>@FunctionalInterface</code> <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25571">#25571</a></li>
+<li>Assert preconditions for MergedAnnotations.from() factory methods <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25568">#25568</a></li>
+<li>Provide access to AbstractRoutingDataSource's resolved target DataSources <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25544">#25544</a></li>
+<li>Possible optimization in UrlResource <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25531">#25531</a></li>
+<li>Refine use of substring operations <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25445">#25445</a></li>
+<li>Cache abstraction does not log hit / miss for synchronized access <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25248">#25248</a></li>
+</ul>
+<h2>:beetle: Bug Fixes</h2>
+<ul>
+<li>Issue with Forwarded Header and Multiple Values <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25737">#25737</a></li>
+<li>CallMetaDataContext.reconcileParameters overwrites cursor name <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25707">#25707</a></li>
+<li>VerifyErrors when using SpEL compilation with Thymeleaf when invoking a default method defined in an interface <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25706">#25706</a></li>
+<li>SQLErrorCodesFactory.getErrorCodes(DataSource) returns empty error codes if access to transactional connection fails <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25681">#25681</a></li>
+<li>Make &quot;org.springframework.util.unit.DataSize&quot; class Serializable <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25675">#25675</a></li>
+<li>Joda-Time presence check fails to detect Joda-Time 2.x specifically <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25655">#25655</a></li>
+<li>Regression in SimpleThreadScope introduced in 5.2.7 <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25618">#25618</a></li>
+<li>Potential integer overflow in ExecutorConfigurationSupport.setAwaitTerminationSeconds(int) and AbstractResourceBasedMessageSource.setCacheSeconds(int) <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25613">#25613</a></li>
+<li>Remove session on 4xx response from WebSocket handshake <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25608">#25608</a></li>
+<li>spring-jdbc don't set out parameter name from metadata for Postgresql function after issue#25399 <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25588">#25588</a></li>
+<li>FileUrlResource isWritable method returns true if URL protocol is not indicating a file <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25584">#25584</a></li>
+<li>Lazy dependency proxy does not populate bean dependencies <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25562">#25562</a></li>
+<li>Bean creation fails with StackOverflowError after upgrading from 5.1.13 to 5.2.7 <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25546">#25546</a></li>
+<li>StaticListableBeanFactory.isSingleton() returns false for singleton beans <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25522">#25522</a></li>
+<li>Standalone MockMvc ignores <code>@RestControllerAdvice</code> annotation attributes <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25520">#25520</a></li>
+<li>MockHttpServletResponse reset() does not reset charset field <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25501">#25501</a></li>
+<li>AnnotationTypeMappings does not filter repeatable annotations <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25483">#25483</a></li>
+<li>Wrong error message for type mismatch in jsonPath().value() <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25480">#25480</a></li>
+<li>Fix infinite loop bug in AnnotationScanner <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25429">#25429</a></li>
+<li>Overloaded <code>@Bean</code> method with name mismatch causes bean to be created twice (in case of ASM processing) <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25263">#25263</a></li>
+</ul>
+<h2>:notebook_with_decorative_cover: Documentation</h2>
+<ul>
+<li>Prevent confusion about build(boolean) method in UriComponentsBuilder <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25604">#25604</a></li>
+<li>Document how to specify Jackson JSON view serialization hints with <code>@RestController</code> and Webflux <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25596">#25596</a></li>
+<li>Inconsistent log level in <code>@Bean</code> javadoc and ConfigurationClassEnhancer <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25590">#25590</a></li>
+<li>Fix asciidoctor syntax for source <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/pull/25539">#25539</a></li>
+<li>Improve Javadoc for <code>@RequestMapping</code>#params <a href="https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25482">#25482</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/69921b49a5836e412ffcd1ea2c7e20d41f0c0fd6"><code>69921b4</code></a> Release version 5.2.9.RELEASE</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/f010368a66cd15b6bd6b54b0f2b9d7ea3433c30a"><code>f010368</code></a> Polishing</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/3ec4538981eaddf63a82b8181134fbc85e79c65a"><code>3ec4538</code></a> Upgrade to Checkstyle 8.36.1</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/3c84863271ff90869598f63e8e90202fe5b0cb2b"><code>3c84863</code></a> Polishing</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/c2f6a98c907c01596f3a082dd0bc3dcf65fcb927"><code>c2f6a98</code></a> Lenient handling of empty Content-Disposition filename</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/49d65d5c4149513354113c6389f312a95bca2749"><code>49d65d5</code></a> Configurable filename encoding in MimeMessageHelper</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/16d125ce768b24ac2cb37892c197c9e6b2582689"><code>16d125c</code></a> Extend Content-Disposition &quot;inline&quot; to error responses</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/dccc78146a281208874b76e5bb69bb8bc3af608d"><code>dccc781</code></a> Expose defaultCharset in StringDecoder</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/dde79a9b65797c6aa5dd32b76f1705d060a3a391"><code>dde79a9</code></a> Upgrade to Reactor Dysprosium-SR12</li>
+<li><a href="https://github.com/spring-projects/spring-framework/commit/49356b2c0f498ae6580c1ef7d7ac0787629de7c8"><code>49356b2</code></a> SimpleIdGenerator rolls over at Long.MAX_VALUE</li>
+<li>Additional commits viewable in <a href="https://github.com/spring-projects/spring-framework/compare/v5.1.1.RELEASE...v5.2.9.RELEASE">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.springframework:spring-beans&package-manager=maven&previous-version=5.1.1.RELEASE&new-version=5.2.9.RELEASE)](https://docs.github.com/en/github/managing-security-vulnerabilities/configuring-github-dependabot-security-updates)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+
+
+</details>

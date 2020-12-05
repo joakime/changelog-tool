@@ -1,5 +1,6 @@
 package org.eclipse.jetty.toolchain;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -9,8 +10,14 @@ public class IssueScanner
 {
     public static Set<Integer> scan(String message)
     {
+        // skip dependabot bodies
+        if (message.contains("@dependabot"))
+        {
+            return Collections.emptySet();
+        }
+
         Set<Integer> issueNums = new HashSet<>();
-        scanPattern(issueNums, message, "#([0-9]{4,6})");
+        scanPattern(issueNums, message, "s*#([0-9]{4,6})");
         scanPattern(issueNums, message, "Issue ([0-9]{4,6})");
         return issueNums;
     }
