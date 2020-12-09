@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class IssueTest
+public class ChangeIssueTest
 {
     @Test
     public void testIssue5675() throws IOException, InterruptedException

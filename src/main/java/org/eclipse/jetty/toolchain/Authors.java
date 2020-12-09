@@ -1,19 +1,14 @@
 package org.eclipse.jetty.toolchain;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -81,16 +76,6 @@ public class Authors extends ArrayList<Author>
             {
                 emailMap.put(email, i);
             }
-        }
-    }
-
-    public void save(Path outputFile) throws IOException
-    {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (BufferedWriter writer = Files.newBufferedWriter(outputFile, UTF_8);
-             JsonWriter jsonWriter = gson.newJsonWriter(writer))
-        {
-            gson.toJson(this, Authors.class, jsonWriter);
         }
     }
 

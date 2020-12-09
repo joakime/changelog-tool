@@ -3,6 +3,7 @@ package org.eclipse.jetty.toolchain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,23 @@ public class Author
     public Author(String name)
     {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Author author = (Author)o;
+        return Objects.equals(github, author.github);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(github);
     }
 
     public String github()

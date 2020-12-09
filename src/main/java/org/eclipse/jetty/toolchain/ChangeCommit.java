@@ -7,15 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GitCommit
+public class ChangeCommit extends ChangeRef
 {
     private String sha;
     private Author author;
     private String title;
     private String body;
     private ZonedDateTime commitTime;
-    private boolean isMerge;
-    private boolean isSkipped = false;
     private List<String> files;
     private List<String> branches;
     private Set<Integer> issueRefs;
@@ -139,25 +137,5 @@ public class GitCommit
     public void setTitle(String title)
     {
         this.title = title;
-    }
-
-    public boolean isMerge()
-    {
-        return isMerge;
-    }
-
-    public void setMerge(boolean merge)
-    {
-        isMerge = merge;
-    }
-
-    public boolean isSkipped()
-    {
-        return isSkipped;
-    }
-
-    public void setSkipped(boolean skipped)
-    {
-        isSkipped = skipped;
     }
 }

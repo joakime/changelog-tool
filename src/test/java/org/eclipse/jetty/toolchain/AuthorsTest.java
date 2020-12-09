@@ -1,12 +1,8 @@
 package org.eclipse.jetty.toolchain;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
-import org.eclipse.jetty.toolchain.test.FS;
-import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -37,14 +33,5 @@ public class AuthorsTest
     {
         Authors authors = Authors.load();
         assertFalse(authors.isCommitter(email), "Email should NOT be a committer: " + email);
-    }
-
-    public void testSave(TestInfo testInfo) throws IOException
-    {
-        Authors authors = new Authors();
-        Path outputDir = MavenTestingUtils.getTargetTestingPath(testInfo.getDisplayName());
-        FS.ensureEmpty(outputDir);
-        Path outputJson = outputDir.resolve("authors-out.json");
-        authors.save(outputJson);
     }
 }

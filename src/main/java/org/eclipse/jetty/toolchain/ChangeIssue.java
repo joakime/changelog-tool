@@ -6,27 +6,19 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Issue
+public class ChangeIssue extends ChangeRef
 {
-    public enum Type
-    {
-        UNKNOWN,
-        ISSUE,
-        PULL_REQUEST,
-        INVALID;
-    }
-
     private final int num;
     private String title;
     private String body;
     private String baseRef;
-    private Type type = Type.UNKNOWN;
-    private boolean skip = false;
+    private String state;
+    private IssueType type = IssueType.UNKNOWN;
     private Set<Integer> referencedIssues = new HashSet<>();
     private Set<String> commits = new HashSet<>();
     private Set<String> labels = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-    public Issue(int num)
+    public ChangeIssue(int num)
     {
         this.num = num;
     }
@@ -86,6 +78,16 @@ public class Issue
         return referencedIssues;
     }
 
+    public String getState()
+    {
+        return state;
+    }
+
+    public void setState(String state)
+    {
+        this.state = state;
+    }
+
     public String getTitle()
     {
         return title;
@@ -96,12 +98,12 @@ public class Issue
         this.title = title;
     }
 
-    public Type getType()
+    public IssueType getType()
     {
         return type;
     }
 
-    public void setType(Type type)
+    public void setType(IssueType type)
     {
         this.type = type;
     }
@@ -109,15 +111,5 @@ public class Issue
     public boolean hasLabel(String label)
     {
         return labels.contains(label);
-    }
-
-    public boolean isSkipped()
-    {
-        return this.skip;
-    }
-
-    public void setSkip(boolean flag)
-    {
-        this.skip = flag;
     }
 }
