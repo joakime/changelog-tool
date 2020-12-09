@@ -22,8 +22,8 @@ public class Main
 
             // labels (on issues and prs) that will flag them as ignored
             changelog.addLabelExclusion("test");
-            changelog.addLabelExclusion("documentation");
             changelog.addLabelExclusion("build");
+            changelog.addLabelExclusion("duplicate");
 
             // skip the following commit paths
             changelog.addCommitPathExclusionFilter(StringUtils::isBlank);
@@ -34,7 +34,6 @@ public class Main
             changelog.addCommitPathExclusionFilter((filename) -> filename.startsWith("Jenkins"));
             changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".md"));
             changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".txt"));
-            changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".adoc"));
             changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".properties"));
             changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".jpg"));
             changelog.addCommitPathExclusionFilter((filename) -> filename.endsWith(".png"));

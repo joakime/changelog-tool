@@ -49,6 +49,24 @@ public class IssueScannerTest
     }
 
     @Test
+    public void testScanOutsideReferenceHtml()
+    {
+        Set<Integer> hits = IssueScanner.scan("<a href=\"https://github-redirect.dependabot.com/spring-projects/spring-framework/issues/25769\">#25769</a>");
+        int[] actual = toSortedArray(hits);
+        int[] expected = {};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testScanOutsideReferenceMarkdown()
+    {
+        Set<Integer> hits = IssueScanner.scan("spring-projects/spring-framework#25769");
+        int[] actual = toSortedArray(hits);
+        int[] expected = {};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
     public void testScanMultiLineThreeReferences()
     {
         Set<Integer> hits = IssueScanner.scan("Example Issue\n" +

@@ -1,38 +1,27 @@
 package org.eclipse.jetty.toolchain;
 
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 
 public abstract class ChangeRef
 {
     private Set<Skip> skipSet;
-    private Set<Integer> changeRef;
+    private int changeRef = -1;
 
-    public void addChangeRef(Change change)
+    public void setChangeRef(Change change)
     {
-        addChangeRef(change.getNumber());
+        assert(this.changeRef != -1);
+        this.changeRef = change.getNumber();
     }
 
-    public void addChangeRef(int changeNum)
-    {
-        if (changeRef == null)
-        {
-            changeRef = new HashSet<>();
-        }
-        this.changeRef.add(changeNum);
-    }
-
-    public Set<Integer> getChangeRefs()
+    public int getChangeRef()
     {
         return this.changeRef;
     }
 
-    public boolean hasChangeRef(Change change)
+    public boolean hasChangeRef()
     {
-        if (this.changeRef == null)
-            return false;
-        return this.changeRef.contains(change.getNumber());
+        return this.changeRef >= 0;
     }
 
     public boolean isSkipped()

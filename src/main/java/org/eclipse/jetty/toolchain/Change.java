@@ -33,6 +33,7 @@ public class Change
         String title = rawTitle;
 
         title = title.replaceAll("Issue #?[0-9]{3,5}", "");
+        title = title.replaceAll("Close[sd] #?[0-9]{3,5}", "");
         title = title.replaceAll("Fixe[sd] #?[0-9]{3,5}", "");
         title = title.replaceAll("Fix #?[0-9]{3,5}", "");
         title = title.replaceAll("Resolve[sd] #?[0-9]{3,5}", "");

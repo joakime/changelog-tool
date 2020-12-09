@@ -265,7 +265,7 @@ public class ChangelogTool implements AutoCloseable
     {
         Set<Integer> issueNums = new HashSet<>();
         issueNums.addAll(IssueScanner.scan(commit.getTitle()));
-        issueNums.addAll(IssueScanner.scan(commit.getBody()));
+        issueNums.addAll(IssueScanner.scanResolutions(commit.getBody()));
         for (int issueNum : issueNums)
         {
             ChangeIssue issue = issueMap.get(issueNum);
@@ -336,14 +336,9 @@ public class ChangelogTool implements AutoCloseable
                 issue.setType(IssueType.ISSUE);
             }
 
-            if (!"closed".equalsIgnoreCase(issue.getState()))
-            {
-                issue.addSkipReason(Skip.NOT_CLOSED);
-            }
-
             Set<Integer> issueRefs = new HashSet<>();
             issueRefs.addAll(IssueScanner.scan(issue.getTitle()));
-            issueRefs.addAll(IssueScanner.scan(issue.getBody()));
+            issueRefs.addAll(IssueScanner.scanResolutions(issue.getBody()));
             issueRefs.remove(issue.getNum());
             issue.addReferencedIssues(issueRefs);
 
@@ -399,7 +394,7 @@ public class ChangelogTool implements AutoCloseable
         }
     }
 
-    public void resolveIssueCommits() throws IOException, GitAPIException
+    public void resolveIssueCommits()
     {
         List<ChangeIssue> relevantIssues = getRelevantKnownIssues();
 
@@ -409,35 +404,32 @@ public class ChangelogTool implements AutoCloseable
 
         Predicate<String> branchesExclusionPredicate = getStringPredicate(branchExclusion);
 
-        // Now populate the time consume parts
-        try (RevWalk walk = new RevWalk(repository))
+        for (ChangeIssue issue : relevantIssues)
         {
-            for (ChangeIssue issue : relevantIssues)
+            System.out.printf("\r%,d issues left (out of %,d) ...      ", issuesLeft--, issuesTotal);
+
+            for (String commitSha : issue.getCommits())
             {
-                System.out.printf("\r%,d issues left (out of %,d) ...      ", issuesLeft--, issuesTotal);
-
-                for (String commitSha : issue.getCommits())
+                String sha = Sha.toLowercase(commitSha);
+                ChangeCommit commit = commitMap.get(sha);
+                if ((commit != null) && (!commit.isSkipped()))
                 {
-                    String sha = Sha.toLowercase(commitSha);
-                    ChangeCommit commit = commitMap.get(sha);
-                    if ((commit != null) && (!commit.isSkipped()))
+                    Set<String> diffPaths = gitCache.getPaths(sha)
+                        .stream()
+                        .filter(Predicate.not(this::isExcludedPath))
+                        .collect(Collectors.toSet());
+                    commit.setFiles(diffPaths);
+                    if (diffPaths.isEmpty())
                     {
-                        Set<String> diffPaths = gitCache.getPaths(sha)
-                            .stream()
-                            .filter(Predicate.not((filepath) -> isExcludedPath(filepath)))
-                            .collect(Collectors.toSet());
-                        commit.setFiles(diffPaths);
-                        if (diffPaths.isEmpty())
-                        {
-                            commit.addSkipReason(Skip.NO_INTERESTING_PATHS_LEFT);
-                        }
+                        commit.addSkipReason(Skip.NO_INTERESTING_PATHS_LEFT);
+                    }
 
-                        Set<String> branchesWithCommit = gitCache.getBranchesContaining(sha);
-                        commit.setBranches(branchesWithCommit);
-                        if (branchesWithCommit.stream().anyMatch(branchesExclusionPredicate))
-                        {
-                            commit.addSkipReason(Skip.EXCLUDED_BRANCH);
-                        }
+                    // Note: this lookup (all branches that commit exists in) is VERY time consuming.
+                    Set<String> branchesWithCommit = gitCache.getBranchesContaining(sha);
+                    commit.setBranches(branchesWithCommit);
+                    if (branchesWithCommit.stream().anyMatch(branchesExclusionPredicate))
+                    {
+                        commit.addSkipReason(Skip.EXCLUDED_BRANCH);
                     }
                 }
             }
@@ -455,6 +447,8 @@ public class ChangelogTool implements AutoCloseable
         // Back reference the issues into the commits
         for (ChangeIssue issue : issueMap.values())
         {
+            // Does issue have relevance?
+            boolean hasRelevance = false;
             for (String commitSha : issue.getCommits())
             {
                 // Only pull in commits found via log, don't create new ones.
@@ -475,6 +469,24 @@ public class ChangelogTool implements AutoCloseable
                         uniqueCommits.add(sha);
                         changeCommit.addPullRequestRef(issue.getNum());
                     }
+
+                    if (!changeCommit.isSkipped())
+                    {
+                        hasRelevance = true;
+                    }
+                }
+            }
+            if (!hasRelevance)
+            {
+                issue.addSkipReason(Skip.NO_RELEVANT_COMMITS);
+            }
+
+            // special handling for pull requests
+            if (issue.getType() == IssueType.PULL_REQUEST)
+            {
+                if (!this.branch.equals(issue.getBaseRef()))
+                {
+                    issue.addSkipReason(Skip.NOT_CORRECT_BASE_REF);
                 }
             }
         }
@@ -485,10 +497,7 @@ public class ChangelogTool implements AutoCloseable
         int changeId = 0;
         for (ChangeIssue issue : getRelevantKnownIssues())
         {
-            if (issue.isSkipped())
-                continue;
-
-            if ((issue.getChangeRefs() != null) && (!issue.getChangeRefs().isEmpty()))
+            if (issue.isSkipped() || issue.hasChangeRef())
                 continue;
 
             Change change = new Change(changeId++);
@@ -499,7 +508,7 @@ public class ChangelogTool implements AutoCloseable
             this.changes.add(change);
         }
 
-        this.changes.forEach((change) -> change.normalize(IssueType.PULL_REQUEST));
+        this.changes.forEach((change) -> change.normalize(IssueType.ISSUE));
     }
 
     private void updateChangeCommit(Change change, String commitSha)
@@ -508,12 +517,13 @@ public class ChangelogTool implements AutoCloseable
         ChangeCommit commit = this.commitMap.get(sha);
         if (commit != null)
         {
-            if (commit.hasChangeRef(change))
-                return;
+            if (commit.hasChangeRef())
+                return; // ignore it, already referenced
+
+            commit.setChangeRef(change);
 
             change.addCommit(commit);
             change.addAuthor(commit.getAuthor());
-            commit.addChangeRef(change);
 
             if (commit.getIssueRefs() != null)
                 commit.getIssueRefs().forEach((ref) -> updateChangeIssues(change, ref));
@@ -527,10 +537,10 @@ public class ChangelogTool implements AutoCloseable
         ChangeIssue issue = this.issueMap.get(issueNum);
         if (issue != null)
         {
-            if (issue.hasChangeRef(change))
-                return;
+            if (issue.hasChangeRef())
+                return; // ignore it, already referenced
 
-            issue.addChangeRef(change);
+            issue.setChangeRef(change);
 
             switch (issue.getType())
             {
@@ -587,33 +597,26 @@ public class ChangelogTool implements AutoCloseable
                 {
                     if (!author.committer())
                     {
-                        community.add(author.toNiceName());
+                        community.add(String.format("%s (%s)", author.toNiceName(), author.name()));
                     }
                 }
+            }
+
+            if (!community.isEmpty())
+            {
+                out.println("# Special Thanks to the following Eclipse Jetty community members");
+                out.println();
+                community.forEach((author) -> out.printf("* %s%n", author));
+                out.println();
             }
 
             out.println("# Changelog");
             out.println();
 
-            if (!community.isEmpty())
-            {
-                out.printf("**Special thanks to the following Eclipse Jetty community members for participating in this release: %s**%n",
-                    String.join(", ", community));
-                out.println();
-            }
-
             // resolve titles, ids, etc ....
             for (Change change : relevantChanges)
             {
-                out.printf("[%d] ", change.getNumber());
-                out.printf("+ %s #%d ", change.getRefType(), change.getRefNumber());
-                Set<Integer> associatedIssues = change.getRefsAssociated();
-                if ((associatedIssues != null) && !associatedIssues.isEmpty())
-                {
-                    out.printf("(%s) ", associatedIssues.stream()
-                        .map((num) -> String.format("#%d", num))
-                        .collect(Collectors.joining(", ")));
-                }
+                out.printf("* #%d - ", change.getRefNumber());
                 out.print(change.getRefTitle());
                 Set<String> authors = change.getAuthors().stream().filter(Predicate.not(Author::committer)).map(Author::toNiceName).collect(Collectors.toSet());
                 if (!authors.isEmpty())
