@@ -1,0 +1,48 @@
+package net.webtide.tools.github;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.google.gson.Gson;
+
+import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class PullRequestTest
+{
+    @Test
+    public void testPullRequest5676() throws IOException, InterruptedException
+    {
+        GitHubApi github = GitHubApi.connect();
+        PullRequest pullRequest = github.pullRequest("eclipse", "jetty.project", 5676);
+
+        assertNotNull(pullRequest);
+        assertEquals(5676, pullRequest.number);
+        assertEquals("janbartel", pullRequest.user.login);
+        assertEquals("jetty-9.4.x-5675-update-osgi-test-deps", pullRequest.head.ref);
+        assertEquals("jetty-9.4.x", pullRequest.base.ref);
+        assertEquals("closed", pullRequest.state);
+    }
+
+    @Test
+    public void testLoadPullRequestJson() throws IOException
+    {
+        Path json = MavenTestingUtils.getTestResourcePathFile("github/pull-request-5676.json");
+        Gson gson = GitHubApi.newGson();
+        try (BufferedReader reader = Files.newBufferedReader(json))
+        {
+            PullRequest pullRequest = gson.fromJson(reader, PullRequest.class);
+            assertNotNull(pullRequest);
+            assertEquals(5676, pullRequest.number);
+            assertEquals("janbartel", pullRequest.user.login);
+            assertEquals("jetty-9.4.x-5675-update-osgi-test-deps", pullRequest.head.ref);
+            assertEquals("jetty-9.4.x", pullRequest.base.ref);
+            assertEquals("closed", pullRequest.state);
+        }
+    }
+}
