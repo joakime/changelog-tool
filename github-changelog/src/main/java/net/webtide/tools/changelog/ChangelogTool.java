@@ -1,29 +1,16 @@
+//
+// ========================================================================
+// Copyright (c) Webtide LLC and others.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+// ========================================================================
+//
+
 package net.webtide.tools.changelog;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
-
-import net.webtide.tools.changelog.gson.ISO8601TypeAdapter;
-import net.webtide.tools.github.Commit;
-import net.webtide.tools.github.GitHubApi;
-import net.webtide.tools.github.GitHubResourceNotFoundException;
-import net.webtide.tools.github.IssueEvents;
-import net.webtide.tools.github.Label;
-import net.webtide.tools.github.PullRequestCommits;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.LogCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -45,6 +32,30 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
+import net.webtide.tools.changelog.gson.ISO8601TypeAdapter;
+import net.webtide.tools.github.Commit;
+import net.webtide.tools.github.GitHubApi;
+import net.webtide.tools.github.GitHubResourceNotFoundException;
+import net.webtide.tools.github.IssueEvents;
+import net.webtide.tools.github.Label;
+import net.webtide.tools.github.PullRequestCommits;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ChangelogTool implements AutoCloseable
 {

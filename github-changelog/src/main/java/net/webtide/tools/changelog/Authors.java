@@ -1,8 +1,16 @@
+//
+// ========================================================================
+// Copyright (c) Webtide LLC and others.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+// ========================================================================
+//
+
 package net.webtide.tools.changelog;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +19,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Authors extends ArrayList<Author>
 {
@@ -30,23 +42,6 @@ public class Authors extends ArrayList<Author>
 
     public Authors()
     {
-//        add(new Author("Greg Wilkins").committer(true).email("gregw@webtide.com"));
-//        add(new Author("Jan Bartel").committer(true).email("janb@webtide.com"));
-//        add(new Author("Simone Bordet").committer(true).email("simone.bordet@gmail.com"));
-//        add(new Author("Jesse McConnell").committer(true).email("jesse.mcconnell@gmail.com"));
-
-//        add("gregw@webtide.com", "Greg Wilkins", true);
-//        add("janb@webtide.com", "Jan Bartel", true);
-//        add("simone.bordet@gmail.com", "Simone Bordet", true);
-//        add("jesse.mcconnell@gmail.com", "Jesse McConnell", true);
-        /*
-        add("oliver.lamy@gmail.com", "Olivier Lamy", true);
-        add("olamy@webtide.com", "Olivier Lamy", true);
-        add("olamy@apache.org", "Olivier Lamy", true);
-        add("ctwalker@gmail.com", "Chris Walker", true);
-        add("lachlan@webtide.com", "Lachlan Roberts", true);
-        add("lorban@bitronix.be", "Ludovic Orban", true);
-         */
     }
 
     @Override

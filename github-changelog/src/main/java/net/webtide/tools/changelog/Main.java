@@ -1,9 +1,21 @@
-package net.webtide.tools.changelog;
+//
+// ========================================================================
+// Copyright (c) Webtide LLC and others.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+// ========================================================================
+//
 
-import org.apache.commons.lang3.StringUtils;
+package net.webtide.tools.changelog;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Main
 {
